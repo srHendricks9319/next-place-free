@@ -1,30 +1,22 @@
-# React + TypeScript + Vite
+# Next Place
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Finding a home that's close to all your points of interest is difficult. Whether you want to be close to work, family, friends, or a community; there is not a great way to find real estate listings within a certain distance between locations. We're hoping to provide a seamless way for people to provide a set of locations and display listing that fit their unique needs.
 
-Currently, two official plugins are available:
+## Getting Started (as a user)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+As this project is still a proof of concept and relies on free to use technology, users will either need to limit their usage of the site or provide their own API credentials for downstream providers.
 
-## Expanding the ESLint configuration
+1. On the home page select the settings icon on the top right
+2. Enter in your API key for each provider listed and click save. Links are provided for onboarding.
+3. Enter in an address and distance of time around a point of interest
+4. Click search
+5. Review the area associated with your address
+6. New development is in progress to continue building out updating of the initial address, adding additional addresses, and retrieving real estate listings.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Getting Started (as a contributor)
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+1. Clone the repo
+2. Run `npm install`
+3. Create _.env.local_ at the root directory
+4. Add your own API keys if you'd like to inject them automatically
+5. Run `npm run dev`
