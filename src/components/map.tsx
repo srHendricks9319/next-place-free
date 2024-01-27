@@ -1,7 +1,7 @@
 import H from "@here/maps-api-for-javascript";
 import { useContext, useEffect, useRef, useState } from "react";
 import { SettingsContext } from "../context/settings.context";
-import { Address, Coordinate } from "../models/address.model";
+import { Coordinate, SearchAddress } from "../models/address.model";
 import getIntersectingArea from "../services/iso.service";
 
 export type PolygonDetails = {
@@ -10,13 +10,7 @@ export type PolygonDetails = {
   center: Coordinate;
 };
 
-export default function Map({
-  address,
-  distance,
-}: {
-  address?: Address;
-  distance?: number;
-}) {
+export default function Map({ addresses }: { addresses?: SearchAddress[] }) {
   const { hereKey, openRouteServiceKey } = useContext(SettingsContext);
   const mapRef = useRef<HTMLDivElement | null>(null);
   const map = useRef<H.Map | null>(null);
@@ -25,18 +19,18 @@ export default function Map({
 
   function createLocationMarkers() {
     const marker = new H.map.Marker({
-      lat: address?.position.lat || 35.78028,
-      lng: address?.position.lng || -78.50855,
+      lat: addresses![0].position.lat,
+      lng: addresses![0].position.lng,
     });
     return marker;
   }
 
   async function createPolygonDetails() {
-    if (address && distance) {
+    if (addresses) {
       console.info("Creating polygon details");
       const data = await getIntersectingArea({
-        locations: [address.position],
-        range: [distance],
+        locations: [addresses[0].position],
+        range: [addresses[0].distance],
         orsKey: openRouteServiceKey,
       });
 
@@ -102,9 +96,9 @@ export default function Map({
 
   useEffect(() => {
     console.info("useEffect: address, distance");
-    console.debug(`trigger address: ${address} | distance: ${distance}`);
+    console.debug(`trigger address: ${JSON.stringify(addresses)}`);
     createPolygonDetails();
-  }, [address, distance]);
+  }, [addresses]);
 
   useEffect(() => {
     console.info("useEffect: polygon");
@@ -122,7 +116,7 @@ export default function Map({
     }
   }, [polygon]);
 
-  if (!address || !distance) {
+  if (!addresses) {
     return <div className="text-gray-500">Enter an address..</div>;
   } else {
     return <div style={{ width: "100%", height: "100%" }} ref={mapRef} />;

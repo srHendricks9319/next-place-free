@@ -7,3 +7,7 @@ export type Address = {
   label: string;
   position: Coordinate;
 };
+
+export type SearchAddress = Address & {
+  distance: number;
+};

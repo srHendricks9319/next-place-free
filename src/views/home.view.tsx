@@ -15,7 +15,7 @@ const inputStyles = {
 
 export default function Home() {
   const navigate = useNavigate();
-  const { setAddress, setDistance } = useContext(SearchContext);
+  const { setAddresses } = useContext(SearchContext);
   const { hereKey } = useContext(SettingsContext);
   const [error, setError] = useState<string | undefined>();
   let address: string | undefined;
@@ -26,14 +26,16 @@ export default function Home() {
 
     try {
       const coordinate = await decodeGeolocation(address, hereKey);
-      setAddress({
-        label: coordinate.label,
-        position: {
-          lat: coordinate.position.lat,
-          lng: coordinate.position.lng,
+      setAddresses([
+        {
+          label: coordinate.label,
+          position: {
+            lat: coordinate.position.lat,
+            lng: coordinate.position.lng,
+          },
+          distance: distance || 10,
         },
-      });
-      setDistance(distance || 10);
+      ]);
       navigate("/search");
     } catch (error) {
       if (
