@@ -9,9 +9,9 @@ type settingsContextType = {
 
 export const SettingsContext = createContext<settingsContextType>({
   hereKey: undefined,
-  setHereKey: (key: string) => null,
+  setHereKey: (_key: string) => null,
   openRouteServiceKey: undefined,
-  setOpenRouteServiceKey: (key: string) => null,
+  setOpenRouteServiceKey: (_key: string) => null,
 });
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {

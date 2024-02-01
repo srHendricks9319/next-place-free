@@ -8,7 +8,7 @@ type searchContextType = {
 
 export const SearchContext = createContext<searchContextType>({
   addresses: undefined,
-  setAddresses: (address: SearchAddress) => null,
+  setAddresses: (_address: SearchAddress) => null,
 });
 
 export const SearchProvider = ({ children }: { children: ReactNode }) => {

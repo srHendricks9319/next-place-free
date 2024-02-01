@@ -1,12 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createHashRouter } from "react-router-dom";
 import "./index.css";
 import RootLayout from "./layout";
 import routes from "./routes";
 import ErrorView from "./views/error.view";
 
-const router = createBrowserRouter([
+const router = createHashRouter([
   {
     element: <RootLayout />,
     errorElement: <ErrorView />,
