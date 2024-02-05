@@ -11,3 +11,11 @@ export type Address = {
 export type SearchAddress = Address & {
   distance: number;
 };
+
+export function constructReverseCoordinates(data: any): number[][] {
+  const reverseList = [];
+  for (const coordinate of data) {
+    reverseList.push([coordinate[1], coordinate[0]]);
+  }
+  return reverseList;
+}

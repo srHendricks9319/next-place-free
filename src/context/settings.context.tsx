@@ -5,6 +5,8 @@ type settingsContextType = {
   setHereKey: Function;
   openRouteServiceKey: string | undefined;
   setOpenRouteServiceKey: Function;
+  rapidKey: string | undefined;
+  setRapidKey: Function;
 };
 
 export const SettingsContext = createContext<settingsContextType>({
@@ -12,6 +14,8 @@ export const SettingsContext = createContext<settingsContextType>({
   setHereKey: (_key: string) => null,
   openRouteServiceKey: undefined,
   setOpenRouteServiceKey: (_key: string) => null,
+  rapidKey: undefined,
+  setRapidKey: (_key: string) => null,
 });
 
 export const SettingsProvider = ({ children }: { children: ReactNode }) => {
@@ -22,6 +26,10 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
     string | undefined
   >(import.meta.env.VITE_OPEN_ROUTE_KEY || undefined);
 
+  const [rapidKey, setRapidKey] = useState<string | undefined>(
+    import.meta.env.VITE_RAPID_API_KEY || undefined
+  );
+
   return (
     <SettingsContext.Provider
       value={{
@@ -29,6 +37,8 @@ export const SettingsProvider = ({ children }: { children: ReactNode }) => {
         setHereKey,
         openRouteServiceKey,
         setOpenRouteServiceKey,
+        rapidKey,
+        setRapidKey,
       }}
     >
       {children}

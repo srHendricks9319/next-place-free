@@ -1,4 +1,7 @@
-import { Coordinate } from "../models/address.model";
+import {
+  Coordinate,
+  constructReverseCoordinates,
+} from "../models/address.model";
 import { InvalidParameterError, MissingKeyError } from "../models/error.model";
 
 type LocationSearch = {
@@ -42,15 +45,10 @@ export default async function getIntersectingArea(data: LocationSearch) {
   };
 
   try {
-    console.info("Making request to openRouteService for isochones");
-    console.debug(`Sending request options: ${JSON.stringify(requestOptions)}`);
-
     const response = await fetch(
       "https://api.openrouteservice.org/v2/isochrones/driving-car",
       requestOptions
     );
-
-    console.info("Successfully called openRouteService");
 
     let responseBody;
 
@@ -60,7 +58,6 @@ export default async function getIntersectingArea(data: LocationSearch) {
       responseBody = await response.text();
     }
 
-    console.debug(`Received response: ${JSON.stringify(responseBody)}`);
     if (!responseBody.features) {
       throw new Error("Invalid response for retrieving isochrone polygon");
     }
@@ -78,20 +75,8 @@ export default async function getIntersectingArea(data: LocationSearch) {
 
     return formattedPolygon;
   } catch (error) {
-    console.log(
-      `OpenRouteService request at 'getIntersectingArea' return an error: ${error}`
-    );
     throw error;
   }
-}
-
-function constructReverseCoordinates(data: any): number[][] {
-  const reverseList = [];
-  for (const coordinate of data) {
-    reverseList.push([coordinate[1], coordinate[0]]);
-  }
-  console.debug(`reversed coordinates for polygon map ${reverseList}`);
-  return reverseList;
 }
 
 function reverseLatAndLong(data: any): Coordinate {

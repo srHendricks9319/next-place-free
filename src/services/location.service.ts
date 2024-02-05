@@ -33,7 +33,6 @@ export default async function decodeGeolocation(
             .NavigationPosition[0].Longitude,
         },
       };
-      console.log(`Geocode data ${JSON.stringify(returnObject)}`);
       return returnObject;
     } else {
       throw new Error(
