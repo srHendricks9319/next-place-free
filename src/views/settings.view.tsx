@@ -55,7 +55,7 @@ export default function Settings() {
       </div>
       <div id="rapidAPI">
         <a
-          href="https://openrouteservice.org/plans/"
+          href="https://rapidapi.com/apidojo/api/realty-in-us"
           className="underline decoration-dashed"
         >
           RapidAPI Key
