@@ -1,4 +1,4 @@
-type InputType = "text" | "toggle";
+type InputType = "text" | "toggle" | "number";
 
 interface props {
   inputType: InputType;

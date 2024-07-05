@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 export default function Header() {
   return (
-    <header className="py-4 px-8 bg-[#026fca] flex flex-row justify-between items-center">
+    <header className="py-4 px-8 bg-[#026fca] flex flex-row justify-between items-center h-[7%]">
       <Link to="">
         <div id="left" className="flex gap-1 items-center">
           <PiHouseSimpleLight size={24} />

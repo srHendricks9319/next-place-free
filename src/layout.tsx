@@ -9,7 +9,7 @@ export default function RootLayout() {
     <SettingsProvider>
       <SearchProvider>
         <Header></Header>
-        <main className="grow">
+        <main className="h-[93%]">
           <Suspense fallback={<div>Loading...</div>}>
             <Outlet />
           </Suspense>

@@ -1,12 +1,15 @@
 import { constructReverseCoordinates } from "../models/address.model";
 import { InvalidParameterError, MissingKeyError } from "../models/error.model";
+import { Listing } from "../models/listing.model";
 
 type ListingSearch = {
   polygon?: number[][];
   rapidKey?: string;
 };
 
-export default async function getListings(data: ListingSearch) {
+export default async function getListings(
+  data: ListingSearch
+): Promise<Listing[]> {
   if (!data.rapidKey)
     throw new MissingKeyError(
       "API key not provided. Go to settings to save your keys"
@@ -48,7 +51,11 @@ export default async function getListings(data: ListingSearch) {
       responseBody = await response.text();
     }
 
-    return responseBody.data.home_search.results;
+    let filteredData = responseBody.data.home_search.results as Listing[];
+    return filteredData.filter(
+      (listing: Listing) =>
+        listing.flags.is_contingent != true && listing.flags.is_pending != true
+    );
   } catch (error) {
     throw error;
   }

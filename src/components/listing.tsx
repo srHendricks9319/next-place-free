@@ -1,14 +1,16 @@
 import { Listing } from "../models/listing.model";
 
 function formatPrice(price: number) {
-  return "$" + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return !price
+    ? "N/A"
+    : "$" + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 export default function ListingTile({ listing }: { listing: Listing }) {
   const address = listing.location.address;
   return (
     <div className="flex flex-col gap w-3/4">
-      <img src={listing.primary_photo.href} className="mb-2"></img>
+      <img src={listing.primary_photo?.href ?? ""} className="mb-2"></img>
       <p className="text-lg font-bold">{formatPrice(listing.list_price)}</p>
       <div className="flex gap-3">
         <p>{listing.description.beds} bds</p>

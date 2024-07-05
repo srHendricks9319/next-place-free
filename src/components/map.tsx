@@ -1,14 +1,14 @@
 import H from "@here/maps-api-for-javascript";
 import { useContext, useEffect, useRef } from "react";
 import { SettingsContext } from "../context/settings.context";
-import { Coordinate, SearchAddress } from "../models/address.model";
+import { Coordinate } from "../models/address.model";
 import { PolygonDetails } from "../views/search.view";
 
 export default function Map({
-  addresses,
+  markers,
   polygon,
 }: {
-  addresses?: SearchAddress[];
+  markers?: Coordinate[];
   polygon?: PolygonDetails;
 }) {
   const { hereKey } = useContext(SettingsContext);
@@ -25,8 +25,15 @@ export default function Map({
     const lineString = new H.geo.LineString(polyLine);
     map.removeObjects(map.getObjects());
     map.addObject(new H.map.Polygon(lineString));
-    if (polygon!.markers) {
-      map.addObject(polygon!.markers);
+
+    if (markers) {
+      const mapMarkers = markers.map(
+        (coordinate: Coordinate) =>
+          new H.map.Marker({ lat: coordinate.lat, lng: coordinate.lng })
+      );
+      const markerGroup = new H.map.Group();
+      markerGroup.addObjects(mapMarkers);
+      map.addObject(markerGroup);
     }
   }
 
@@ -80,7 +87,7 @@ export default function Map({
     }
   }, [polygon]);
 
-  if (!addresses && !polygon) {
+  if (!polygon) {
     return <div className="text-gray-500">Enter an address..</div>;
   } else {
     return <div style={{ width: "100%", height: "100%" }} ref={mapRef} />;
