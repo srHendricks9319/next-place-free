@@ -21,7 +21,9 @@ export default function Search() {
   const [polygon, setPolygon] = useState<PolygonDetails | undefined>();
   const [listings, setListings] = useState<Listing[] | undefined>();
   const [markers, setMarkers] = useState<Coordinate[] | undefined>();
-  const [filterCriteria, setFilterCriteria] = useState<Record<string, any>>({});
+  const [filterCriteria, setFilterCriteria] = useState<Record<string, string>>(
+    {}
+  );
   const listingData = useRef<Listing[]>([]);
 
   useEffect(() => {
@@ -71,11 +73,14 @@ export default function Search() {
     const allListings = structuredClone(listingData.current);
     setListings(
       filterUtil.filterListings(allListings, [
-        (listing) => filterUtil.filterByPrice(listing, filterCriteria.price),
-        (listing) => filterUtil.filterByState(listing, filterCriteria.state),
+        (listing) =>
+          filterUtil.filterByMinPrice(listing, filterCriteria.minPrice),
+        (listing) =>
+          filterUtil.filterByMaxPrice(listing, filterCriteria.maxPrice),
+        // (listing) => filterUtil.filterByState(listing, filterCriteria.state),
         (listing) => filterUtil.filterByBedrooms(listing, filterCriteria.beds),
         (listing) => filterUtil.filterByBaths(listing, filterCriteria.baths),
-        (listing) => filterUtil.filterBySqft(listing, filterCriteria.sqft),
+        // (listing) => filterUtil.filterBySqft(listing, filterCriteria.sqft),
       ])
     );
   }
@@ -95,28 +100,10 @@ export default function Search() {
   return (
     <div className="w-full h-full flex flex-col">
       <SearchBar
-        updateFunctions={{
-          price: (value: number) =>
-            setFilterCriteria((prev) => {
-              return { ...prev, price: value };
-            }),
-          bedrooms: (value: number) =>
-            setFilterCriteria((prev) => {
-              return { ...prev, beds: value };
-            }),
-          baths: (value: number) =>
-            setFilterCriteria((prev) => {
-              return { ...prev, baths: value };
-            }),
-          sqft: (value: number) =>
-            setFilterCriteria((prev) => {
-              return { ...prev, sqft: value };
-            }),
-          state: (value: string) =>
-            setFilterCriteria((prev) => {
-              return { ...prev, state: value };
-            }),
+        updateFilter={(filterCriteria: Record<string, string>) => {
+          setFilterCriteria({ ...filterCriteria });
         }}
+        currentFilter={filterCriteria}
       />
       <div id="content" className="flex grow h-[90%]">
         <div
