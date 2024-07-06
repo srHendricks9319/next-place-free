@@ -14,7 +14,7 @@ export default function SearchBar({
   updateFunctions: onUpdates;
 }) {
   return (
-    <div className="flex gap-4 items-center w-full h-16 p-2 bg-slate-600 text-white">
+    <div className="flex gap-4 items-center w-full h-[10%] p-2 bg-slate-600 text-white">
       <InputBox
         inputType="number"
         labelText="max price"
@@ -22,12 +22,12 @@ export default function SearchBar({
       />
       <InputBox
         inputType="number"
-        labelText="required bedrooms"
+        labelText="bedrooms"
         inputUpdate={(value) => updateFunctions.bedrooms(parseInt(value))}
       />
       <InputBox
         inputType="number"
-        labelText="required baths"
+        labelText="baths"
         inputUpdate={(value) => updateFunctions.baths(parseInt(value))}
       />
       <InputBox

@@ -1,5 +1,7 @@
 import H from "@here/maps-api-for-javascript";
 import { useContext, useEffect, useRef } from "react";
+import { renderToString } from "react-dom/server";
+import { FaDotCircle } from "react-icons/fa";
 import { SettingsContext } from "../context/settings.context";
 import { Coordinate } from "../models/address.model";
 import { PolygonDetails } from "../views/search.view";
@@ -29,7 +31,13 @@ export default function Map({
     if (markers) {
       const mapMarkers = markers.map(
         (coordinate: Coordinate) =>
-          new H.map.Marker({ lat: coordinate.lat, lng: coordinate.lng })
+          new H.map.Marker(
+            { lat: coordinate.lat, lng: coordinate.lng },
+            {
+              data: null,
+              icon: new H.map.Icon(renderToString(<FaDotCircle />)),
+            }
+          )
       );
       const markerGroup = new H.map.Group();
       markerGroup.addObjects(mapMarkers);
@@ -85,7 +93,7 @@ export default function Map({
       map.current.setCenter(polygon.center);
       addPolygonAndMarkersToMap(map.current);
     }
-  }, [polygon]);
+  }, [polygon, markers]);
 
   if (!polygon) {
     return <div className="text-gray-500">Enter an address..</div>;

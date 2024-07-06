@@ -4,7 +4,7 @@ import Map from "../components/map";
 import SearchBar from "../components/searchBar";
 import { SearchContext } from "../context/searchContext";
 import { SettingsContext } from "../context/settings.context";
-import { Coordinate, SearchAddress } from "../models/address.model";
+import { Coordinate } from "../models/address.model";
 import { Listing } from "../models/listing.model";
 import getIntersectingArea from "../services/iso.service";
 import getListings from "../services/listings.service";
@@ -20,31 +20,28 @@ export default function Search() {
   const { rapidKey, openRouteServiceKey } = useContext(SettingsContext);
   const [polygon, setPolygon] = useState<PolygonDetails | undefined>();
   const [listings, setListings] = useState<Listing[] | undefined>();
+  const [markers, setMarkers] = useState<Coordinate[] | undefined>();
   const [filterCriteria, setFilterCriteria] = useState<Record<string, any>>({});
   const listingData = useRef<Listing[]>([]);
 
   useEffect(() => {
-    if (listings)
+    setMarkers(
       Array.prototype.concat(
-        markers,
+        {
+          lat: addresses![0].position.lat,
+          lng: addresses![0].position.lng,
+          label: "poi",
+        },
         listings?.map((listing: Listing): Coordinate => {
           return {
+            label: "listing",
             lat: listing.location.address.coordinate.lat,
             lng: listing.location.address.coordinate.lon,
           };
         })
-      );
+      )
+    );
   }, [listings]);
-
-  // FIX: Fix issue where listing is undefined
-  let markers: Coordinate[] | undefined = addresses?.map(
-    (address: SearchAddress): Coordinate => {
-      return {
-        lat: address.position.lat,
-        lng: address.position.lng,
-      };
-    }
-  );
 
   useEffect(() => {
     createMapDetails();
@@ -121,7 +118,7 @@ export default function Search() {
             }),
         }}
       />
-      <div id="content" className="flex grow">
+      <div id="content" className="flex grow h-[90%]">
         <div
           id="sidebar"
           className="w-1/4 pt-6 flex flex-col gap-6 items-center overflow-y-auto"
@@ -132,7 +129,7 @@ export default function Search() {
         </div>
         <div
           id="map"
-          className="w-3/4 max-h-dvh flex justify-center items-center bg-slate-300"
+          className="w-3/4 flex justify-center items-center bg-slate-300"
         >
           <Map markers={markers} polygon={polygon} />
         </div>
