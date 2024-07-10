@@ -1,5 +1,11 @@
-export type Coordinate = {
+export type MarkerDetails = {
+  id: string;
   label: string;
+  active?: boolean;
+  location: Coordinate;
+};
+
+export type Coordinate = {
   lat: number;
   lng: number;
 };

@@ -3,14 +3,14 @@ import { useContext, useEffect, useRef } from "react";
 import { renderToString } from "react-dom/server";
 import { FaDotCircle } from "react-icons/fa";
 import { SettingsContext } from "../context/settings.context";
-import { Coordinate } from "../models/address.model";
+import { Coordinate, MarkerDetails } from "../models/address.model";
 import { PolygonDetails } from "../views/search.view";
 
 export default function Map({
   markers,
   polygon,
 }: {
-  markers?: Coordinate[];
+  markers?: MarkerDetails[];
   polygon?: PolygonDetails;
 }) {
   const { hereKey } = useContext(SettingsContext);
@@ -18,7 +18,35 @@ export default function Map({
   const map = useRef<H.Map | null>(null);
   const platform = useRef<H.service.Platform | null>(null);
 
-  function addPolygonAndMarkersToMap(map: H.Map) {
+  function addMarkersToMap(map: H.Map) {
+    const markerObjects = map
+      .getObjects()
+      .filter((object: H.map.Object) => object instanceof H.map.Marker);
+    map.removeObjects(markerObjects);
+
+    if (markers) {
+      const mapMarkers = markers.map(
+        (marker: MarkerDetails) =>
+          new H.map.Marker(
+            { lat: marker.location.lat, lng: marker.location.lng },
+            {
+              zIndex: marker.active ? 50 : 0,
+              data: null,
+              icon: new H.map.Icon(
+                renderToString(
+                  <FaDotCircle color={marker.active ? "red" : "black"} />
+                )
+              ),
+            }
+          )
+      );
+      const markerGroup = new H.map.Group();
+      markerGroup.addObjects(mapMarkers);
+      map.addObject(markerGroup);
+    }
+  }
+
+  function addPolygonToMap(map: H.Map) {
     let polyLine: number[] = [];
     polygon!.area.forEach((element: number[]) =>
       polyLine.push(element[0], element[1], 100)
@@ -27,22 +55,6 @@ export default function Map({
     const lineString = new H.geo.LineString(polyLine);
     map.removeObjects(map.getObjects());
     map.addObject(new H.map.Polygon(lineString));
-
-    if (markers) {
-      const mapMarkers = markers.map(
-        (coordinate: Coordinate) =>
-          new H.map.Marker(
-            { lat: coordinate.lat, lng: coordinate.lng },
-            {
-              data: null,
-              icon: new H.map.Icon(renderToString(<FaDotCircle />)),
-            }
-          )
-      );
-      const markerGroup = new H.map.Group();
-      markerGroup.addObjects(mapMarkers);
-      map.addObject(markerGroup);
-    }
   }
 
   function createMap(center: Coordinate): H.Map {
@@ -88,12 +100,18 @@ export default function Map({
       window.addEventListener("resize", () =>
         map.current!.getViewPort().resize()
       );
-      addPolygonAndMarkersToMap(map.current);
+      addPolygonToMap(map.current);
     } else if (map.current && polygon?.center) {
       map.current.setCenter(polygon.center);
-      addPolygonAndMarkersToMap(map.current);
+      addPolygonToMap(map.current);
     }
   }, [polygon, markers]);
+
+  useEffect(() => {
+    if (map.current && polygon?.center) {
+      addMarkersToMap(map.current);
+    }
+  }, [markers]);
 
   if (!polygon) {
     return <div className="text-gray-500">Enter an address..</div>;

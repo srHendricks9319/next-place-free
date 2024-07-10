@@ -4,7 +4,7 @@ import Map from "../components/map";
 import SearchBar from "../components/searchBar";
 import { SearchContext } from "../context/searchContext";
 import { SettingsContext } from "../context/settings.context";
-import { Coordinate } from "../models/address.model";
+import { Coordinate, MarkerDetails } from "../models/address.model";
 import { Listing } from "../models/listing.model";
 import getIntersectingArea from "../services/iso.service";
 import getListings from "../services/listings.service";
@@ -20,7 +20,7 @@ export default function Search() {
   const { rapidKey, openRouteServiceKey } = useContext(SettingsContext);
   const [polygon, setPolygon] = useState<PolygonDetails | undefined>();
   const [listings, setListings] = useState<Listing[] | undefined>();
-  const [markers, setMarkers] = useState<Coordinate[] | undefined>();
+  const [markers, setMarkers] = useState<MarkerDetails[]>([]);
   const [filterCriteria, setFilterCriteria] = useState<Record<string, string>>(
     {}
   );
@@ -30,15 +30,21 @@ export default function Search() {
     setMarkers(
       Array.prototype.concat(
         {
-          lat: addresses![0].position.lat,
-          lng: addresses![0].position.lng,
           label: "poi",
+          id: "",
+          location: {
+            lat: addresses![0].position.lat,
+            lng: addresses![0].position.lng,
+          },
         },
-        listings?.map((listing: Listing): Coordinate => {
+        listings?.map((listing: Listing): MarkerDetails => {
           return {
+            id: listing.listing_id,
             label: "listing",
-            lat: listing.location.address.coordinate.lat,
-            lng: listing.location.address.coordinate.lon,
+            location: {
+              lat: listing.location.address.coordinate.lat,
+              lng: listing.location.address.coordinate.lon,
+            },
           };
         })
       )
@@ -97,6 +103,19 @@ export default function Search() {
     }
   }
 
+  async function listingHover(id: string, active: boolean): Promise<void> {
+    const markerIndex = markers.findIndex(
+      (marker: MarkerDetails) => marker.id === id
+    );
+    if (markerIndex) {
+      setMarkers((prev) => {
+        const tmp = prev;
+        tmp[markerIndex].active = active;
+        return [...tmp];
+      });
+    }
+  }
+
   return (
     <div className="w-full h-full flex flex-col">
       <SearchBar
@@ -108,15 +127,21 @@ export default function Search() {
       <div id="content" className="flex grow h-[90%]">
         <div
           id="sidebar"
-          className="w-1/4 pt-6 flex flex-col gap-6 items-center overflow-y-auto"
+          className="w-1/2 pt-6 flex flex-row flex-wrap gap-6 overflow-y-auto justify-around"
         >
           {listings?.map((listing: Listing) => (
-            <ListingTile listing={listing}></ListingTile>
+            <div
+              onMouseEnter={() => listingHover(listing.listing_id, true)}
+              onMouseLeave={() => listingHover(listing.listing_id, false)}
+              className="w-5/12"
+            >
+              <ListingTile listing={listing}></ListingTile>
+            </div>
           ))}
         </div>
         <div
           id="map"
-          className="w-3/4 flex justify-center items-center bg-slate-300"
+          className="w-1/2 flex justify-center items-center bg-slate-300"
         >
           <Map markers={markers} polygon={polygon} />
         </div>
