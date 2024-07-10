@@ -122,7 +122,7 @@ export default function Search() {
         updateFilter={(filterCriteria: Record<string, string>) => {
           setFilterCriteria({ ...filterCriteria });
         }}
-        currentFilter={filterCriteria}
+        // currentFilter={filterCriteria}
       />
       <div id="content" className="flex grow h-[90%]">
         <div

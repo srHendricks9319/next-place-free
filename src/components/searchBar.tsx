@@ -3,11 +3,11 @@ import { FaFilter } from "react-icons/fa";
 import InputBox from "./inputBox";
 
 export default function SearchBar({
-  currentFilter,
+  // currentFilter,
   updateFilter,
 }: {
   updateFilter: (filter: Record<string, string>) => void;
-  currentFilter: Record<string, string>;
+  // currentFilter: Record<string, string>;
 }) {
   const [visibleBox, setVisibleBox] = useState<boolean>(false);
   const filterCriteria = useRef<Record<string, string>>({});
