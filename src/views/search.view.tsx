@@ -24,6 +24,7 @@ export default function Search() {
   const [filterCriteria, setFilterCriteria] = useState<Record<string, string>>(
     {}
   );
+  const listingTypes = useRef<Set<string>>(new Set());
   const listingData = useRef<Listing[]>([]);
 
   useEffect(() => {
@@ -86,6 +87,7 @@ export default function Search() {
         // (listing) => filterUtil.filterByState(listing, filterCriteria.state),
         (listing) => filterUtil.filterByBedrooms(listing, filterCriteria.beds),
         (listing) => filterUtil.filterByBaths(listing, filterCriteria.baths),
+        (listing) => filterUtil.filterByType(listing, filterCriteria.type),
         // (listing) => filterUtil.filterBySqft(listing, filterCriteria.sqft),
       ])
     );
@@ -98,6 +100,11 @@ export default function Search() {
         rapidKey: rapidKey,
       });
       setListings(listingData.current);
+      listingTypes.current = new Set(
+        listingData.current.map((listing: Listing) => {
+          return listing.description.type;
+        })
+      ).add("all");
     } catch (error) {
       // TODO: Handle error with getting listings
     }
@@ -122,6 +129,7 @@ export default function Search() {
         updateFilter={(filterCriteria: Record<string, string>) => {
           setFilterCriteria({ ...filterCriteria });
         }}
+        listingTypes={listingTypes.current}
         // currentFilter={filterCriteria}
       />
       <div id="content" className="flex grow h-[90%]">

@@ -26,5 +26,8 @@ export const filterByBedrooms = (listing: Listing, beds: string): boolean =>
 export const filterByBaths = (listing: Listing, baths: string): boolean =>
   baths ? listing.description.baths_full >= parseInt(baths) : true;
 
+export const filterByType = (listing: Listing, type: string): boolean =>
+  type && type != "all" ? listing.description.type === type : true;
+
 export const filterBySqft = (listing: Listing, sqft: number): boolean =>
   sqft ? listing.description.sqft >= sqft : true;

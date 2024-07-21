@@ -4,7 +4,11 @@ import Hero from "../components/hero";
 import InputBox from "../components/inputBox";
 import { SearchContext } from "../context/searchContext";
 import { SettingsContext } from "../context/settings.context";
-import { InvalidParameterError, MissingKeyError } from "../models/error.model";
+import {
+  CouldNotFindAddressError,
+  InvalidParameterError,
+  MissingKeyError,
+} from "../models/error.model";
 import decodeGeolocation from "../services/location.service";
 
 const inputStyles = {
@@ -40,9 +44,11 @@ export default function Home() {
     } catch (error) {
       if (
         error instanceof MissingKeyError ||
-        error instanceof InvalidParameterError
-      )
+        error instanceof InvalidParameterError ||
+        error instanceof CouldNotFindAddressError
+      ) {
         setError(error.message);
+      }
     }
   }
 

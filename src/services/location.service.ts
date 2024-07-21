@@ -1,5 +1,9 @@
 import { Address } from "../models/address.model";
-import { InvalidParameterError, MissingKeyError } from "../models/error.model";
+import {
+  CouldNotFindAddressError,
+  InvalidParameterError,
+  MissingKeyError,
+} from "../models/error.model";
 
 export default async function decodeGeolocation(
   address?: string,
@@ -19,8 +23,12 @@ export default async function decodeGeolocation(
     const response = await fetch(constructedRequest);
     const responseBody = await response.json();
 
+    if (!responseBody?.Response?.View.length) {
+      throw new CouldNotFindAddressError("Could not find address");
+    }
+
     if (
-      responseBody?.Response?.View[0]?.Result[0]?.Location
+      responseBody.Response.View[0].Result[0]?.Location
         ?.NavigationPosition[0] &&
       responseBody?.Response?.View[0]?.Result[0]?.Location?.Address
     ) {
